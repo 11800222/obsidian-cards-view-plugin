@@ -26,16 +26,16 @@ export const searchResultFiles = derived(
 
 		Promise.all(
 			$sortedFiles.map(async (file) => {
-				const content = await file.vault.cachedRead(file);
-				return [$preparedSearch(content), $preparedSearch(file.name)];
+				const filePath = file.path;
+				return [$preparedSearch(filePath), $preparedSearch(file.name)];
 			}),
 		).then((searchResults) => {
 			set(
 				$sortedFiles.filter((file, index) => {
-					const [contentMatch, nameMatch] = searchResults[index];
+					const [pathMatch, nameMatch] = searchResults[index];
 
 					return (
-						(contentMatch && contentMatch.score > -2) ||
+						(pathMatch && pathMatch.score > -2) ||
 						(nameMatch && nameMatch.score > -2)
 					);
 				}),
